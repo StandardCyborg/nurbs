@@ -8,6 +8,30 @@ const controlPanel = require('control-panel');
 const cross = require('gl-vec3/cross');
 const normalize = require('gl-vec3/normalize');
 
+const codeDiv = document.createElement('div');
+const codeLabel = document.createElement('button');
+codeLabel.textContent = 'Show/hide Code';
+const code = document.createElement('pre');
+codeDiv.append(codeLabel);
+codeDiv.append(code);
+document.body.appendChild(codeDiv);
+code.style.width = '600px';
+code.style.height = '60%';
+code.style.display = 'none';
+codeDiv.style.maxHeight = '60%';
+codeDiv.style.position = 'absolute';
+codeDiv.style.right = 0;
+codeDiv.style.bottom = 0;
+codeDiv.style.zIndex = 10;
+codeDiv.style.backgroundColor = 'white';
+codeDiv.style.padding = '10px';
+codeDiv.style.overflow = 'auto';
+codeDiv.style.fontSize = '9px';
+
+codeLabel.addEventListener('click', function () {
+  code.style.display = code.style.display === 'none' ? 'block' : 'none';
+});
+
 var error = document.createElement('span');
 error.style.color = '#cc3333';
 error.style.fontFamily = 'sans-serif';
@@ -148,11 +172,18 @@ function run (regl) {
     flatPositions = unpack(ndarray(ndControlPoints.data, [ndControlPoints.shape[0] * ndControlPoints.shape[1], ndControlPoints.shape[2]]));
     controlPositionBuffer = (controlPositionBuffer || regl.buffer)(flatPositions);
 
+    function onDebug (str) {
+      if (/evaluateDer/.test(str)) return;
+
+      code.textContent = str;
+    }
+
     surface = (surface || nurbs)({
       points: ndControlPoints,
       weights: ndControlWeights,
       degree: [state.uDegree, state.vDegree],
-      boundary: [state.uBoundary, state.vBoundary]
+      boundary: [state.uBoundary, state.vBoundary],
+      debug: onDebug
     });
 
     var uDer = surface.derivativeEvaluator(1, 0);

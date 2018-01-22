@@ -9,12 +9,21 @@ var inferType = require('./utils/infer-type');
 var isArrayLike = require('./utils/is-array-like');
 
 var evaluatorCache = {};
+var codeCache = {};
 
 module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBasis, derivative, derivativeDimension) {
   if (isBasis) cacheKey = 'Basis' + cacheKey;
   if (derivative) cacheKey = 'Der' + derivative + '_' + derivativeDimension + '_' + cacheKey;
   var cachedEvaluator = evaluatorCache[cacheKey];
+  if (debug) {
+    var logger = typeof debug === 'function' ? debug : console.log;
+  }
+
   if (cachedEvaluator) {
+    if (debug) {
+      logger(codeCache[cacheKey]);
+    }
+
     return cachedEvaluator.bind(nurbs);
   }
 
@@ -210,7 +219,10 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
         }
       }
 
-      if (boundary[d] === 'closed') line(tVar(d) + ' %= ' + sizeVar(d) + ';');
+      if (boundary[d] === 'closed') {
+        debugLine('\n  // Wrap the B-Spline parameter for closed boundary');
+        line(tVar(d) + ' %= ' + sizeVar(d) + ';');
+      }
     }
   }
 
@@ -354,7 +366,12 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
   }
   code.push('}');
 
-  if (debug) console.log(code.join('\n'));
+  if (debug) {
+    var codeStr = code.join('\n');
+    logger(codeStr);
+
+    codeCache[cacheKey] = codeStr;
+  }
 
   var evaluator = new Function([code.join('\n'), '; return ', functionName].join(''))();
   evaluatorCache[cacheKey] = evaluator;

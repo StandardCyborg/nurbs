@@ -36,7 +36,7 @@ function nurbs (points, degree, knots, weights, boundary, opts) {
 
     if (points && !isArrayLike(points) && !isNdarray(points)) {
       opts = points;
-      debug = !!points.debug;
+      debug = points.debug;
       checkBounds = !!points.checkBounds;
       self.weights = points.weights;
       self.knots = points.knots;
@@ -52,7 +52,7 @@ function nurbs (points, degree, knots, weights, boundary, opts) {
       self.points = points;
       self.boundary = boundary;
       self.size = opts.size;
-      debug = !!opts.debug;
+      debug = opts.debug;
       checkBounds = !!opts.checkBounds;
     }
 
