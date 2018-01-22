@@ -106,9 +106,10 @@ curve.domain
 
 ### Basis functions
 
-A spline does not pass through its control points. If you want to do more advanced analysis such as constructing a spline that passes through a set of points, you may evaluate the basis functions directly. To determine the contribution at `(u, v) = [1.3, 2.4]` of the very first point, indexed by `points[0][0]`:
+A spline does not pass through its control points. If you want to do more advanced analysis such as constructing a spline that passes through a set of points, you may evaluate the basis functions directly. If you don't yet have a set of points defining the spline, you may initialize a spline with a `size` instead of a set of points. Then to determine the contribution at `(u, v) = [1.3, 2.4]` of the very first point, indexed by `points[0][0]`:
 
 ```javascript
+curve = nurbs({size: [10, 15]);
 var basis = curve.basisEvaluator();
 basis([], 1.3, 2.4, 0, 0);
 ```
