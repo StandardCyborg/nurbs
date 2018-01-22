@@ -8,7 +8,7 @@
     "lint": "semistandard",
     "lint-fix": "semistandard --fix",
     "test": "npm run lint && node test/index.js",
-    "build-example": "browserify example/3d.js -t glslify -g es2040 | uglifyjs -cm | indexhtmlify > docs/index.html"
+    "build-example": "browserify example/3d.js -t glslify -g es2040 | uglifyjs -cm | indexhtmlify |html-inject-github-corner | html-inject-meta > docs/index.html"
   },
   "repository": {
     "type": "git",
