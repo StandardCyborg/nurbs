@@ -6,6 +6,8 @@ This library implements n-dimensional [Non-Uniform Rational B-Splines][nurbs] (N
 
 ## Installation
 
+**Not yet published.**
+
 ```bash
 $ npm install nurbs
 ```
@@ -18,6 +20,8 @@ To construct an open quadratic B-Spline in two dimensions:
 <!--The following example, instead of creating a new spline, this example updates the existing spline by calling the existing spline as a constructor, which re-runs the validations while preserving the same instance. (This feature may be removed. It's simple but weird and since the splines have very little internal state, it really doens't save much speed or allocation.) In general, references to the input data are retained so that you may mutate the data (including the number of points) after instantiation. If you change the degree or dimensionality of the curve though, you must either create a new curve or invoke the existing curve as a constructor and pass new data.-->
 
 ```javascript
+var nurbs = require('nurbs');
+
 curve = nurbs({
   points: [[-1, 0], [-0.5, 0.5], [0.5, -0.5], [1, 0]],
   degree: 2
@@ -41,8 +45,6 @@ If you don't provide a knot vector, a uniform knot vector with integer values wi
 To construct a clamped spline, that is, a spline which passes through its endpoints, you may specify boundary conditions. To construct a clampedspline:
 
 ```javascript
-var nurbs = require('nurbs');
-
 var curve = nurbs({
   points: [[-1, 0], [-0.5, 0.5], [0.5, -0.5], [1, 0]],
   degree: 2,

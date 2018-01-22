@@ -1,15 +1,15 @@
-var mouseChange = require('mouse-change')
-var mouseWheel = require('mouse-wheel')
-var identity = require('gl-mat4/identity')
-var perspective = require('gl-mat4/perspective')
-var lookAt = require('gl-mat4/lookAt')
+var mouseChange = require('mouse-change');
+var mouseWheel = require('mouse-wheel');
+var identity = require('gl-mat4/identity');
+var perspective = require('gl-mat4/perspective');
+var lookAt = require('gl-mat4/lookAt');
 
-module.exports = createCamera
+module.exports = createCamera;
 
-var isBrowser = typeof window !== 'undefined'
+var isBrowser = typeof window !== 'undefined';
 
 function createCamera (regl, props_) {
-  var props = props_ || {}
+  var props = props_ || {};
 
   // Preserve backward-compatibilty while renaming preventDefault -> noScroll
   if (typeof props.noScroll === 'undefined') {
@@ -34,104 +34,104 @@ function createCamera (regl, props_) {
     dphi: 0,
     rotationSpeed: typeof props.rotationSpeed !== 'undefined' ? props.rotationSpeed : 1,
     zoomSpeed: typeof props.zoomSpeed !== 'undefined' ? props.zoomSpeed : 1,
-    renderOnDirty: typeof props.renderOnDirty !== undefined ? !!props.renderOnDirty : false
+    renderOnDirty: typeof props.renderOnDirty !== 'undefined' ? !!props.renderOnDirty : false
+  };
+
+  var element = props.element;
+  var damping = typeof props.damping !== 'undefined' ? props.damping : 0.9;
+
+  var right = new Float32Array([1, 0, 0]);
+  var front = new Float32Array([0, 0, 1]);
+
+  var minDistance = Math.log('minDistance' in props ? props.minDistance : 0.1);
+  var maxDistance = Math.log('maxDistance' in props ? props.maxDistance : 1000);
+
+  var ddistance = 0;
+
+  var prevX = 0;
+  var prevY = 0;
+
+  function getWidth () {
+    return element ? element.offsetWidth : window.innerWidth;
   }
 
-  var element = props.element
-  var damping = typeof props.damping !== 'undefined' ? props.damping : 0.9
-
-  var right = new Float32Array([1, 0, 0])
-  var front = new Float32Array([0, 0, 1])
-
-  var minDistance = Math.log('minDistance' in props ? props.minDistance : 0.1)
-  var maxDistance = Math.log('maxDistance' in props ? props.maxDistance : 1000)
-
-  var ddistance = 0
-
-  var prevX = 0
-  var prevY = 0
+  function getHeight () {
+    return element ? element.offsetHeight : window.innerHeight;
+  }
 
   if (isBrowser && props.mouse !== false) {
-    var source = element || regl._gl.canvas
-
-    function getWidth () {
-      return element ? element.offsetWidth : window.innerWidth
-    }
-
-    function getHeight () {
-      return element ? element.offsetHeight : window.innerHeight
-    }
+    var source = element || regl._gl.canvas;
 
     mouseChange(source, function (buttons, x, y) {
       if (buttons & 1) {
-        var dx = (x - prevX) / getWidth()
-        var dy = (y - prevY) / getHeight()
+        var dx = (x - prevX) / getWidth();
+        var dy = (y - prevY) / getHeight();
 
-        cameraState.dtheta += cameraState.rotationSpeed * 4.0 * dx
-        cameraState.dphi += cameraState.rotationSpeed * 4.0 * dy
+        cameraState.dtheta += cameraState.rotationSpeed * 4.0 * dx;
+        cameraState.dphi += cameraState.rotationSpeed * 4.0 * dy;
         cameraState.dirty = true;
       }
-      prevX = x
-      prevY = y
-    })
+      prevX = x;
+      prevY = y;
+    });
 
     mouseWheel(source, function (dx, dy) {
-      ddistance += dy / getHeight() * cameraState.zoomSpeed
+      ddistance += dy / getHeight() * cameraState.zoomSpeed;
       cameraState.dirty = true;
-    }, props.noScroll)
+    }, props.noScroll);
   }
 
   function damp (x) {
-    var xd = x * damping
+    var xd = x * damping;
     if (Math.abs(xd) < 0.1) {
-      return 0
+      return 0;
     }
     cameraState.dirty = true;
-    return xd
+    return xd;
   }
 
   function clamp (x, lo, hi) {
-    return Math.min(Math.max(x, lo), hi)
+    return Math.min(Math.max(x, lo), hi);
   }
 
   function updateCamera (props) {
     Object.keys(props).forEach(function (prop) {
-      cameraState[prop] = props[prop]
-    })
+      cameraState[prop] = props[prop];
+    });
 
-    var center = cameraState.center
-    var eye = cameraState.eye
-    var up = cameraState.up
-    var dtheta = cameraState.dtheta
-    var dphi = cameraState.dphi
+    var center = cameraState.center;
+    var eye = cameraState.eye;
+    var up = cameraState.up;
+    var dtheta = cameraState.dtheta;
+    var dphi = cameraState.dphi;
 
-    cameraState.theta += dtheta
+    cameraState.theta += dtheta;
     cameraState.phi = clamp(
       cameraState.phi + dphi,
       -Math.PI / 2.0,
-      Math.PI / 2.0)
+      Math.PI / 2.0);
     cameraState.distance = clamp(
       cameraState.distance + ddistance,
       minDistance,
-      maxDistance)
+      maxDistance);
 
-    cameraState.dtheta = damp(dtheta)
-    cameraState.dphi = damp(dphi)
-    ddistance = damp(ddistance)
+    cameraState.dtheta = damp(dtheta);
+    cameraState.dphi = damp(dphi);
+    ddistance = damp(ddistance);
 
-    var theta = cameraState.theta
-    var phi = cameraState.phi
-    var r = Math.exp(cameraState.distance)
+    var theta = cameraState.theta;
+    var phi = cameraState.phi;
+    var r = Math.exp(cameraState.distance);
 
-    var vf = r * Math.sin(theta) * Math.cos(phi)
-    var vr = r * Math.cos(theta) * Math.cos(phi)
-    var vu = r * Math.sin(phi)
+    var vf = r * Math.sin(theta) * Math.cos(phi);
+    var vr = r * Math.cos(theta) * Math.cos(phi);
+    var vu = r * Math.sin(phi);
 
     for (var i = 0; i < 3; ++i) {
-      eye[i] = center[i] + vf * front[i] + vr * right[i] + vu * up[i]
+      eye[i] = center[i] + vf * front[i] + vr * right[i] + vu * up[i];
     }
 
-    lookAt(cameraState.view, eye, center, up)
+    lookAt(cameraState.view, eye, center, up);
   }
 
   cameraState.dirty = true;
@@ -146,20 +146,20 @@ function createCamera (regl, props_) {
           cameraState.fovy,
           context.viewportWidth / context.viewportHeight,
           cameraState.near,
-          cameraState.far)
-        if (cameraState.flipY) { cameraState.projection[5] *= -1 }
-        return cameraState.projection
+          cameraState.far);
+        if (cameraState.flipY) { cameraState.projection[5] *= -1; }
+        return cameraState.projection;
       }
     }),
     uniforms: Object.keys(cameraState).reduce(function (uniforms, name) {
-      uniforms[name] = regl.context(name)
-      return uniforms
+      uniforms[name] = regl.context(name);
+      return uniforms;
     }, {})
-  })
+  });
 
   function setupCamera (props, block) {
     if (typeof setupCamera.dirty !== 'undefined') {
-      cameraState.dirty = setupCamera.dirty || cameraState.dirty
+      cameraState.dirty = setupCamera.dirty || cameraState.dirty;
       setupCamera.dirty = undefined;
     }
 
@@ -170,22 +170,22 @@ function createCamera (regl, props_) {
     if (cameraState.renderOnDirty && !cameraState.dirty) return;
 
     if (!block) {
-      block = props
-      props = {}
+      block = props;
+      props = {};
     }
 
-    updateCamera(props)
-    injectContext(block)
+    updateCamera(props);
+    injectContext(block);
     cameraState.dirty = false;
   }
 
   Object.keys(cameraState).forEach(function (name) {
-    setupCamera[name] = cameraState[name]
-  })
+    setupCamera[name] = cameraState[name];
+  });
 
   setupCamera.taint = function () {
     cameraState.dirty = true;
   };
 
-  return setupCamera
+  return setupCamera;
 }
