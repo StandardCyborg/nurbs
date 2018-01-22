@@ -246,7 +246,7 @@ Evaluate the spline at the parameters <em>t<sub>0</sub></em>, ..., <em>t<sub>n -
 
 Returns a function which evaluates the <em>n<sup>th</sup></em> partial derivative of the spline along dimension `dimension` (starting at `dimension = 0`). The function matches the signature and return value of `spline.evaluate`, writing the derivative components to `out`. `t0, t1, ... tn_1` are the coordinates from <em>t<sub>0</sub></em> to <em>t<sub>n - 1</sub></em> at which to differentiate. See \[1\] for more details.
 
-Currently only the first derivative is implementd.
+Currently only the first derivative is implemented.
 
 ---
 
