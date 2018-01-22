@@ -308,20 +308,21 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
           });
         }
         ndloop(n, function (ii) {
-          // Replace the dimension being interpolated with the interpolation indices
           var ij = ii.slice();
           var ij1 = ii.slice();
+          // Replace the dimension being interpolated with the interpolation indices
           ij[d] = j;
           ij1[d] = j - 1;
-          var ijDim = ij.slice();
-          var ij1Dim = ij1.slice();
+          // Create a version to which we can append the dimension when we loop over spatial dimension
+          var ijWithDimension = ij.slice();
+          var ij1WithDimension = ij1.slice();
           if (isDerivative) {
             for (m = 0; m < spaceDimension; m++) {
-              ijDim[splineDimension] = ij1Dim[splineDimension] = m;
+              ijWithDimension[splineDimension] = ij1WithDimension[splineDimension] = m;
               var weightFactor = hasWeights ? 'h * ' + weightVar(ij1) + ' / ' + weightVar(ij) + ' * ' : '';
-              var pt1 = pointVar(ijDim) + (hasWeights ? ' / h' : '');
-              var pt2 = pointVar(ij1Dim) + (hasWeights ? ' / ' + weightVar(ij1) : '');
-              line(pointVar(ijDim) + ' = ' + degree[d] + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
+              var pt1 = pointVar(ijWithDimension) + (hasWeights ? ' / h' : '');
+              var pt2 = pointVar(ij1WithDimension) + (hasWeights ? ' / ' + weightVar(ij1) : '');
+              line(pointVar(ijWithDimension) + ' = ' + degree[d] + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
             }
           } else {
             if (isBasis) {

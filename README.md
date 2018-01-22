@@ -1,5 +1,7 @@
 # nurbs
 
+[![Build Status][travis-badge]][travis-link]
+
 > [Non-Uniform Rational B-Splines][nurbs] (NURBS) of any dimensionality
 
 This library implements n-dimensional [Non-Uniform Rational B-Splines][nurbs] (NURBS). It has no dependencies and uses code generation to unroll loops, optimize for various cases (uniform and non-uniform; rational and non-rational; clamped, open, and periodic) and allow compatibility with multiple input types (arrays of arrays, [ndarrays][ndarray]).
@@ -45,7 +47,7 @@ If you don't provide a knot vector, a uniform knot vector with integer values wi
 To construct a clamped spline, that is, a spline which passes through its endpoints, you may specify boundary conditions with the `boundary` property:
 
 ```javascript
-curve = nurbs({
+var curve = nurbs({
   points: [[-1, 0], [-0.5, 0.5], [0.5, -0.5], [1, 0]],
   degree: 2,
   boundary: 'clamped'
@@ -69,13 +71,13 @@ A B-Spline can be made periodic by wrapping around and duplicating the first or 
 
 
 ```javascript
-curve = nurbs({
+var curve = nurbs({
   points: [[-1, 0], [-0.5, 0.5], [0.5, -0.5], [1, 0]],
   degree: 2,
   boundary: 'closed'
 });
 
-curve.domain
+curve.domain;
 // => [[0, 4]]
 ```
 
@@ -90,7 +92,7 @@ Plotting shows the closed spline:
 An unclosed NURBS spline requires `n + degree + 1` knots, where `n` is the number of points. A closed NURBS curve requires only `n + 1` knots. The periodicity is defined by equivalence of the first and last knot, i.e. `k_0 := k_n`. The knots then define `n` unique, periodic knot intervals. For example,
 
 ```javascript
-curve = nurbs({
+var curve = nurbs({
   points: [[-1, 0], [-0.5, 0.5], [0.5, -0.5], [1, 0]],
   weights: [0.5, 4, 1, 0.5],
   knots: [[0, 1, 3, 7, 15]],
@@ -98,7 +100,7 @@ curve = nurbs({
   degree: 2
 });
 
-curve.domain
+curve.domain;
 // => [[0, 15]]
 ```
 
@@ -111,7 +113,7 @@ curve.domain
 A spline does not pass through its control points. If you want to do more advanced analysis such as constructing a spline that passes through a set of points, you may evaluate the basis functions directly. If you don't yet have a set of points defining the spline, you may initialize a spline with a `size` instead of a `points`. Then to determine the contribution at `(u, v) = [1.3, 2.4]` of the very first point, indexed by `points[0][0]`:
 
 ```javascript
-curve = nurbs({size: [10, 15]);
+var curve = nurbs({size: [10, 15]);
 var basis = curve.basisEvaluator();
 basis([], 1.3, 2.4, 0, 0);
 ```
@@ -222,7 +224,7 @@ Construct a NURBS object. Options are:
 
   Note that clamped on one end and open on the other is perfectly possible but requires specifying your own knot vector.
 
-- **`opts` (optional)**: An object containing additional configuration options. Permitted options are:
+- **`options` (optional)**: An object containing additional configuration options. Permitted options are:
   - **`debug` (boolean, default `false`)**: When true, writes the generated code to the console.
   - **`checkBounds` (boolean, default `false`)**: When true, checks each parameter against the dimension's domain and throws an error if a point outside the defined domain is evaluated. Behavior is undefined otherwise.
   - **`size` (array)**: if you only wish to evaluate the basis functions, you may omit points and provide an array containing the number of points in the control hull in each respective spline dimension. For example, a <em>5 &times; 3</em> control hull would be `size: [5, 3]`.
@@ -285,3 +287,5 @@ Development supported by [Standard Cyborg][sc].
 [support]: https://en.wikipedia.org/wiki/Support_\(mathematics\)
 [sc]: http://www.standardcyborg.com
 [floater]: https://pdfs.semanticscholar.org/23cf/5b46ea38dd321c525bf952bde459dbf1be33.pdf
+[travis-badge]: https://travis-ci.org/StandardCyborg/nurbs.svg?branch=master
+[travis-link]: https://travis-ci.org/StandardCyborg/nurbs
