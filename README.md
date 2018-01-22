@@ -104,6 +104,21 @@ curve.domain
 <img width="480" src="./docs/closed-nurbs.png" alt="Closed Periodic NURBS">
 </p>
 
+### Basis functions
+
+A spline does not pass through its control points. If you want to do more advanced analysis, you may evaluate the basis functions directly. To determine the contribution at `(u, v) = [1.3, 2.4]` of the very first point, indexed by `points[0][0]`:
+
+```javascript
+var basis = curve.basisEvaluator();
+basis([], 1.3, 2.4, 0, 0);
+```
+
+You may also query which points contribute to a given paramter value with `support`:
+
+```javascript
+curve.support([], 1.3, 2.4)
+```
+
 ### Transform
 
 Each `nurbs` object has a `transform` method that accepts a matrix using gl-matrix style matrices. See [gl-mat2](https://github.com/gl-modules/gl-mat2), [gl-mat3](https://github.com/gl-modules/gl-mat3), and [gl-mat4](https://github.com/gl-modules/gl-mat4). For example, to apply a transformation to the previous example:
@@ -208,6 +223,13 @@ Construct a NURBS object. Options are:
   - **`checkBounds` (boolean, default `false`)**: When true, checks each parameter against the dimension's domain and throws an error if a point outside the defined domain is evaluated. Behavior is undefined otherwise.
   - **`size` (array)**: if you only wish to evaluate the basis functions, you may omit points and provide an array containing the number of points in the control hull in each respective spline dimension. For example, a <em>5 &times; 3</em> control hull would be `size: [5, 3]`.
 
+### Properties
+
+- `domain` (Array): An array of arrays containing the minima and maxima for each spline dimension.
+- `splineDimension` (Number): Dimensionality of the spline surface, e.g. curve = 1, surface = 2, etc.
+- `dimension` (Number): Spatial dimension of the spline. One-dimensional = 1, 2D plane = 2, etc.
+- `size` (Array): Size of the control point data.
+
 ### Methods
 
 ---
@@ -234,7 +256,7 @@ Returns a function `basis(t0, t1, ..., tn_1, i0, i1, ..., in_1)` which evaluates
 
 ### `spline.support(out, t0, t1, ..., tn_1)`
 
-Compute the [support][support] of a point on the spline. That is, the integer indices of all control points that influence the spline at the given position. To avoid allocation of many small arrays, the result is written in-place to array `out` as a packed array of index tuples, e.g. points `[0, 5, 3]` and `[1, 5, 3]` are returned as `[0, 5, 3, 1, 5, 3]`.
+Compute the [support][support] of a point on the spline. That is, the integer indices of all control points that influence the spline at the given position. To avoid allocation of many small arrays, the result is written in-place to array `out` as a packed array of index tuples, e.g. indices `[0, 5, 3]` and `[1, 5, 3]` are returned as `[0, 5, 3, 1, 5, 3]`.
 
 ---
 
