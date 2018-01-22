@@ -22,7 +22,7 @@ To construct an open quadratic B-Spline in two dimensions:
 ```javascript
 var nurbs = require('nurbs');
 
-curve = nurbs({
+var curve = nurbs({
   points: [[-1, 0], [-0.5, 0.5], [0.5, -0.5], [1, 0]],
   degree: 2
 });
@@ -42,10 +42,10 @@ If you don't provide a knot vector, a uniform knot vector with integer values wi
 
 ### Clamped B-Spline
 
-To construct a clamped spline, that is, a spline which passes through its endpoints, you may specify boundary conditions. To construct a clampedspline:
+To construct a clamped spline, that is, a spline which passes through its endpoints, you may specify boundary conditions. To construct a clamped spline:
 
 ```javascript
-var curve = nurbs({
+curve = nurbs({
   points: [[-1, 0], [-0.5, 0.5], [0.5, -0.5], [1, 0]],
   degree: 2,
   boundary: 'clamped'
@@ -55,7 +55,7 @@ curve.domain;
 // => [[2, 4]]
 ```
 
-In this case the knots would be `[2, 2, 2, 3, 4, 4, 4]`, where the offset is a result of clamping of the open knot vector by repeating the first and last knots `degree + 1` times. As a result, the domain `[2, 4]` is unchanged from the previous example.
+In this case the knots would be `[2, 2, 2, 3, 4, 4, 4]`, where the offset is a result of clamping of the open knot vector by repeating the first and last knots `degree + 1` times. As a result, the domain `[2, 4]` is unchanged from the previous example. For an existing spline, you could also call `curve` with new data in order to preserve the same instance while resetting and sanitizing all of the data, as in `curve({points: ...})`.
 
 <p align="center">
 <img width="480" src="./docs/clamped.png" alt="Clamped B-Spline">
