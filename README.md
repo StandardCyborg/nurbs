@@ -125,6 +125,7 @@ curve.support([], 1.3, 2.4)
 Each `nurbs` object has a `transform` method that accepts a matrix using gl-matrix style matrices. See [gl-mat2](https://github.com/gl-modules/gl-mat2), [gl-mat3](https://github.com/gl-modules/gl-mat3), and [gl-mat4](https://github.com/gl-modules/gl-mat4). For example, to apply a transformation in-place to the previous example:
 
 ```javascript
+var mat3 = require('gl-mat3');
 var m = mat3.identity([]);
 mat3.translate(m, m, [3, 2, 0]);
 mat3.rotate(m, m, Math.PI / 2);
