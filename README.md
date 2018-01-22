@@ -55,7 +55,9 @@ curve.domain;
 // => [[2, 4]]
 ```
 
-In this case the knots would be `[2, 2, 2, 3, 4, 4, 4]`, where the offset is a result of clamping of the open knot vector by repeating the first and last knots `degree + 1` times. As a result, the domain `[2, 4]` is unchanged from the previous example. For an existing spline, you could also call `curve` with new data in order to preserve the same instance while resetting and sanitizing all of the data, as in `curve({points: ...})`.
+In this case the knots would be `[2, 2, 2, 3, 4, 4, 4]`, where the offset is a result of clamping of the open knot vector by repeating the first and last knots `degree + 1` times. As a result, the domain `[2, 4]` is unchanged from the previous example.
+
+To change the data of an existing spline instance, you could also call `curve` as a constructor, which will then reset and sanitize all of the data, as in `curve({points: ..., degree: ..., ...})`.
 
 <p align="center">
 <img width="480" src="./docs/clamped.png" alt="Clamped B-Spline">
