@@ -33,7 +33,7 @@ require('regl')({
 function run (regl) {
   var i, j;
 
-  const camera = require('regl-camera')(regl, {
+  const camera = require('./regl-camera')(regl, {
     phi: 0.5,
     theta: 0.2,
     damping: 0,
