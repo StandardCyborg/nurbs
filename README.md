@@ -42,7 +42,7 @@ If you don't provide a knot vector, a uniform knot vector with integer values wi
 
 ### Clamped B-Spline
 
-To construct a clamped spline, that is, a spline which passes through its endpoints, you may specify boundary conditions. To construct a clamped spline:
+To construct a clamped spline, that is, a spline which passes through its endpoints, you may specify boundary conditions with the `boundary` property:
 
 ```javascript
 curve = nurbs({
