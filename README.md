@@ -37,6 +37,7 @@ $ npm install nurbs
     - [`evaluate`](#splineevaluateout-t0-t1--tn_1)
     - [`evaluator`](#splineevaluatorderivativeorder-isbasis)
     - [`support`](#splinesupportout-t0-t1--tn_1)
+    - [`support`](#splinetransform-m)
 
 
 ## Examples
@@ -332,6 +333,10 @@ Arguments are:
 Compute the [support][support] of a point on the spline. That is, the integer indices of all control points that influence the spline at the given position. To avoid allocation of many small arrays, the result is written in-place to array `out` as a packed array of index tuples, e.g. indices `[0, 5, 3]` and `[1, 5, 3]` are returned as `[0, 5, 3, 1, 5, 3]`. Returns a reference to `out`.
 
 ---
+
+### `spline.transform(m)`
+
+Transform a spline in-place using gl-matrix-style matrices (e.g. [gl-mat3](https://github.com/stackgl/gl-mat3) or [gl-mat4](https://github.com/stackgl/gl-mat4)). Modifies spline data and returns a reference to the spline.
 
 ## References
 
