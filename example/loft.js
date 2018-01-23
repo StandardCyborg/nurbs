@@ -115,7 +115,6 @@ function run (regl) {
 
   remesh();
 
-  /*
   var controlPositionBuffer, flatPositions, surface;
   var wireframePositionBuffer, wireframeNextBuffer;
   var wireframeDirectionBuffer, wireframeCellBuffer;
@@ -234,8 +233,6 @@ function run (regl) {
     wireframeCellBuffer = (wireframeCellBuffer || regl.elements)(hullWireframe.cells);
   }
 
-  remesh();
-  */
 
   /* var drawHull = regl({
     vert: glsl`
