@@ -213,7 +213,7 @@ var curve = nurbs({
 curve.evaluate([], 0.5, 0.5);
 ```
 
-[examples/3d.js](./examples/3d.js) shows a 3D surface created in this way using the [regl][regl] library.
+[examples/3d.js](./example/3d.js) shows a 3D surface created in this way using the [regl][regl] library. See the live version [here][demo].
 
 <p align="center">
 <img width="480" src="./docs/surface.png" alt="NURBS surface">
@@ -345,3 +345,4 @@ Development supported by [Standard Cyborg][sc].
 [floater]: https://pdfs.semanticscholar.org/23cf/5b46ea38dd321c525bf952bde459dbf1be33.pdf
 [travis-badge]: https://travis-ci.org/StandardCyborg/nurbs.svg?branch=master
 [travis-link]: https://travis-ci.org/StandardCyborg/nurbs
+[demo]: https://standardcyborg.github.io/nurbs/
