@@ -57,6 +57,15 @@ var curve = nurbs({
 curve.domain;
 // => [[2, 4]]
 
+curve.size;
+// => [4]
+
+curve.splineDimension;
+// => 1
+
+curve.dimension;
+// => 2
+
 curve.evaluate([], 3.0);
 // => [0, 0]
 ```
