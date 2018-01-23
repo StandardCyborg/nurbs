@@ -14,7 +14,7 @@ module.exports = function (nurbs, debug, checkBounds, pointType, weightType, kno
     var hasKnots = isArrayLike(nurbs.knots) && isArrayLike(nurbs.knots[d]);
     if (hasKnots) hasAnyKnots = true;
     degreeParts.push(
-      'P' +
+      'Deg' +
       nurbs.degree[d] +
       (hasKnots ? '' : 'Uniform') +
       capitalize(nurbs.boundary[d])

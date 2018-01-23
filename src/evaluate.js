@@ -11,9 +11,25 @@ var isArrayLike = require('./utils/is-array-like');
 var evaluatorCache = {};
 var codeCache = {};
 
-module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBasis, derivative, derivativeDimension) {
+module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBasis, derivative) {
+  var splineDimension = nurbs.splineDimension;
+
+  if (derivative !== undefined) {
+    if (!Array.isArray(derivative)) {
+      derivative = [derivative];
+    }
+    var totalDerivativeOrder = 0;
+    for (i = 0; i < splineDimension; i++) { 
+      if (derivative[i] === undefined) derivative[i] = 0;
+      totalDerivativeOrder += derivative[i];
+    }
+    if (totalDerivativeOrder !== 1) {
+      throw new Error('Analytical derivative not implemented for order n = ' + totalDerivativeOrder + '.');
+    }
+  }
+
   if (isBasis) cacheKey = 'Basis' + cacheKey;
-  if (derivative) cacheKey = 'Der' + derivative + '_' + derivativeDimension + '_' + cacheKey;
+  if (derivative) cacheKey = 'Der' + derivative.join('_') + '_' + cacheKey;
   var cachedEvaluator = evaluatorCache[cacheKey];
   if (debug) {
     var logger = typeof debug === 'function' ? debug : console.log;
@@ -31,7 +47,6 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
   var degree = nurbs.degree;
   var weights = nurbs.weights;
   var knots = nurbs.knots;
-  var splineDimension = nurbs.splineDimension;
   var spaceDimension = nurbs.dimension;
   var boundary = nurbs.boundary;
 
@@ -284,7 +299,7 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
     for (i = 0; i < degree[d]; i++) {
       debugLine('\n  // Degree ' + degree[d] + ' evaluation in dimension ' + d + ', step ' + (i + 1) + '\n');
       for (j = degree[d]; j > i; j--) {
-        var isDerivative = derivative && d === derivativeDimension && i === degree[d] - 1;
+        var isDerivative = derivative && derivative[d] !== 0 && i === degree[d] - 1;
 
         if (isDerivative) {
           line('m = 1 / (' + knotVar([d, j - i + degree[d] - 1]) + ' - ' + knotVar([d, j - 1]) + ');');

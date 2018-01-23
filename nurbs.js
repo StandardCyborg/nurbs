@@ -192,19 +192,20 @@ function nurbs (points, degree, knots, weights, boundary, opts) {
 
       var accessors = createAccessors(self);
 
-      self.evaluate = createEvaluator(cacheKey, self, accessors, debug, checkBounds);
+      self.evaluate = createEvaluator(cacheKey, self, accessors, debug, checkBounds, false);
       self.transform = createTransform(cacheKey, self, accessors, debug);
       self.support = createSupport(cacheKey, self, accessors, debug, checkBounds);
+
+      self.evaluator = function (derivativeOrder, isBasis) {
+        return createEvaluator(cacheKey, self, accessors, debug, checkBounds, isBasis, derivativeOrder);
+      };
 
       self.basisEvaluator = function () {
         return createEvaluator(cacheKey, self, accessors, debug, checkBounds, true);
       };
 
-      self.derivativeEvaluator = function (order, dimension) {
-        if (order !== 1) {
-          throw new Error('Analytical derivative not implemented for order n = ' + order + '.');
-        }
-        return createEvaluator(cacheKey, self, accessors, debug, checkBounds, false, order, dimension);
+      self.derivativeEvaluator = function (orderPerDimension) {
+        return createEvaluator(cacheKey, self, accessors, debug, checkBounds, false, orderPerDimension);
       };
     }
 

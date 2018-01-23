@@ -186,8 +186,8 @@ function run (regl) {
       debug: onDebug
     });
 
-    var uDer = surface.derivativeEvaluator(1, 0);
-    var vDer = surface.derivativeEvaluator(1, 1);
+    var uDer = surface.evaluator([1, 0]);
+    var vDer = surface.evaluator([0, 1]);
 
     var nx = Math.max(31, Math.min(101, 6 * state.uPoints + 1));
     var ny = Math.max(31, Math.min(101, 6 * state.uPoints + 1));

@@ -246,17 +246,12 @@ Evaluate the spline at the parameters <em>t<sub>0</sub></em>, ..., <em>t<sub>n -
 
 ---
 
-### `spline.derivativeEvaluator(n, dimension)`
+### `spline.evaluator(derivativeOrder, isBasis)`
 
-Returns a function which evaluates the <em>n<sup>th</sup></em> partial derivative of the spline along dimension `dimension` (starting at `dimension = 0`). The function matches the signature and return value of `spline.evaluate`, writing the derivative components to `out`. `t0, t1, ... tn_1` are the coordinates from <em>t<sub>0</sub></em> to <em>t<sub>n - 1</sub></em> at which to differentiate. See \[1\] for more details.
-
-Currently only the first derivative is implemented.
-
----
-
-### `spline.basisEvaluator()`
-
-Returns a function `basis(t0, t1, ..., tn_1, i0, i1, ..., in_1)` which evaluates the value of the spline basis functions for a given input input point and parameterized location. The input is the spline parameters <em>(t<sub>0</sub>, t<sub>1</sub>, ..., t<sub>n - 1</sub>)</em> and the integer indices of a control point <em>(i<sub>0</sub>, i<sub>1</sub>, ..., i<sub>n - 1</sub>)</em>. The output is a real number between <em>0</em> and <em>1</em> by which the correpsonding control point is multiplied. Summing across all points in the `spline.support` gives the computed spline position. When possible, evaluating the spline directly is much faster.
+Returns a function which evaluates the spline according to the specified arguments.
+Arguments are:
+- `derivativeOrder` (Number or Array of Numbers, default: `undefined`): If provided, evaluates the corresponding partial derivative. For example, to evaluate the third derivative in the second dimension of a spline, you would call `spline.evaluator([0, 3])`. See \[1\] for more details. **Currently only first derivatives are implemented.**
+- `isBasis` (boolean, default: `false`): If true, creates a basis function evaluator instead of a direct spline evaluator. Returns a function `function basis(out, t0, t1, ..., tn_1, i0, i1, ..., in_1)` which evaluates the value of the spline basis functions for a given parameter location and control hull indices. The inputs `t0, ..., tn_1` are the spline parameters <em>(t<sub>0</sub>, t<sub>1</sub>, ..., t<sub>n - 1</sub>)</em> and the integer indices `i0, ..., in_1` are the integer indices of a control point <em>(i<sub>0</sub>, i<sub>1</sub>, ..., i<sub>n - 1</sub>)</em>. The output is a real number between <em>0</em> and <em>1</em> by which the correpsonding control point is multiplied. Summing across all points in the `spline.support` gives the computed spline position. When possible, evaluating the spline directly is much faster.
 
 ---
 
