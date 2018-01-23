@@ -25,6 +25,7 @@ $ npm install nurbs
   - [Derivatives](#derivatives)
   - [Transforms](#transforms)
   - [Curves, Surfaces, Volumes, etc.](#curves-surfaces-volumes-etc)
+  - [ndarrays](#ndarrays)
 - [API](#api)
   - [`nurbs`](#nurbspoints-degree-weights-knots-boundary-options)
   - [Properties](#properties)
