@@ -13,13 +13,14 @@ var codeCache = {};
 
 module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBasis, derivative) {
   var splineDimension = nurbs.splineDimension;
+  var i, j, n, m, d, kvar;
 
   if (derivative !== undefined) {
     if (!Array.isArray(derivative)) {
       derivative = [derivative];
     }
     var totalDerivativeOrder = 0;
-    for (i = 0; i < splineDimension; i++) { 
+    for (i = 0; i < splineDimension; i++) {
       if (derivative[i] === undefined) derivative[i] = 0;
       totalDerivativeOrder += derivative[i];
     }
@@ -50,7 +51,6 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
   var spaceDimension = nurbs.dimension;
   var boundary = nurbs.boundary;
 
-  var i, j, n, m, d, kvar;
   var code = [];
   var functionName = 'evaluate' + cacheKey;
 
