@@ -189,7 +189,7 @@ curve.transform(m);
 The above concepts generalize to any dimensionality of spline surface and space dimensions. You can create a surface patch in three dimensions using the code below. In this case, each property is specified per-dimension.
 
 ```javascript
-curve({
+var curve = nurbs({
   points: [
     [[0, 2, 3], [4, 5, 6], [7, 8, 9]],
     [[1, 2, 2], [1, 2, 3], [4, 5, 6]],
