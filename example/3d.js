@@ -5,8 +5,8 @@ const unpack = require('ndarray-unpack');
 const nurbs = require('../nurbs');
 const wireframe = require('screen-projected-lines');
 const controlPanel = require('control-panel');
-const cross = require('gl-vec3/cross');
-const normalize = require('gl-vec3/normalize');
+const sample = require('../extras/sample');
+const hull = require('../extras/hull');
 
 const codeDiv = document.createElement('div');
 const codeLabel = document.createElement('button');
@@ -121,10 +121,6 @@ function run (regl) {
   var normalBuffer, positionBuffer, cellBuffer;
   var wireframePositionBuffer, wireframeNextBuffer;
   var wireframeDirectionBuffer, wireframeCellBuffer;
-  var positions = [];
-  var normals = [];
-  var cells = [];
-  var hullCells = [];
 
   var controlPoints = [];
   var controlWeights = [];
@@ -137,8 +133,11 @@ function run (regl) {
     }
   }
 
+  var mesh = {};
+  var hullMesh = {};
+
   function remesh () {
-    var i, idx1, idx2, idx, u, v;
+    var i;
     if (state.uDegree > state.uPoints) {
       showError('Number of points in the u direction must be greater than the degree');
       return;
@@ -186,57 +185,12 @@ function run (regl) {
       debug: onDebug
     });
 
-    var uDer = surface.evaluator([1, 0]);
-    var vDer = surface.evaluator([0, 1]);
+    sample(mesh, surface);
+    normalBuffer = (normalBuffer || regl.buffer)(mesh.normals);
+    positionBuffer = (positionBuffer || regl.buffer)(mesh.positions);
+    cellBuffer = (cellBuffer || regl.elements)(mesh.cells);
 
-    var nx = Math.max(31, Math.min(101, 6 * state.uPoints + 1));
-    var ny = Math.max(31, Math.min(101, 6 * state.uPoints + 1));
-    positions.length = nx * ny;
-    normals.length = nx * ny;
-    for (i = 0; i < nx; i++) {
-      u = surface.domain[0][0] + (surface.domain[0][1] - surface.domain[0][0]) * i / (nx - 1);
-      for (j = 0; j < ny; j++) {
-        v = surface.domain[1][0] + (surface.domain[1][1] - surface.domain[1][0]) * j / (ny - 1);
-        positions[i + nx * j] = surface.evaluate([], u, v);
-
-        var normal = cross([],
-          uDer([], u, v),
-          vDer([], u, v)
-        );
-        normals[i + nx * j] = normalize(normal, normal);
-      }
-    }
-    cells.length = 0;
-    for (i = 0; i < nx - 1; i++) {
-      for (j = 0; j < ny - 1; j++) {
-        idx = i + nx * j;
-        cells.push([idx, idx + 1, idx + 1 + nx]);
-        cells.push([idx, idx + 1 + nx, idx + nx]);
-      }
-    }
-    normalBuffer = (normalBuffer || regl.buffer)(normals);
-    positionBuffer = (positionBuffer || regl.buffer)(positions);
-    cellBuffer = (cellBuffer || regl.elements)(cells);
-
-    hullCells.length = 0;
-    for (j = 0; j < state.vPoints; j++) {
-      for (i = 0; i < state.uPoints - (surface.boundary[0] === 'closed' ? 0 : 1); i++) {
-        idx1 = i * state.vPoints + j;
-        idx2 = ((i + 1) % state.uPoints) * state.vPoints + j;
-        hullCells.push([idx1, idx2]);
-      }
-    }
-    for (i = 0; i < state.uPoints; i++) {
-      for (j = 0; j < state.vPoints - (surface.boundary[1] === 'closed' ? 0 : 1); j++) {
-        idx1 = i * state.vPoints + j % state.vPoints;
-        idx2 = i * state.vPoints + (j + 1) % state.vPoints;
-        hullCells.push([idx1, idx2]);
-      }
-    }
-    var hullWireframe = wireframe({
-      cells: hullCells,
-      positions: flatPositions
-    });
+    var hullWireframe = wireframe(hull(hullMesh, nurbs));
 
     wireframePositionBuffer = (wireframePositionBuffer || regl.buffer)(hullWireframe.positions);
     wireframeNextBuffer = (wireframeNextBuffer || regl.buffer)(hullWireframe.nextPositions);
