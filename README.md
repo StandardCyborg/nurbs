@@ -273,27 +273,33 @@ Construct a NURBS object. Options are:
   - **`checkBounds` (boolean, default `false`)**: When true, checks each parameter against the dimension's domain and throws an error if a point outside the defined domain is evaluated. Behavior is undefined otherwise.
   - **`size` (array)**: if you only wish to evaluate the basis functions, you may omit points and provide an array containing the number of points in the control hull in each respective spline dimension. For example, a <em>5 &times; 3</em> control hull would be `size: [5, 3]`.
 
-### Properties
+## Properties
 
 ### `spline.domain`
 
 An array of arrays containing the minima and maxima for each spline dimension.
 
+--- 
+
 ### `spline.splineDimension`
 
 Dimensionality of the spline surface, e.g. curve = 1, surface = 2, etc.
 
+--- 
 
 ### `spline.dimension`
 
 Spatial dimension of the spline. One-dimensional = 1, 2D plane = 2, etc.
 
+--- 
+
 ### `spline.size`
 
 Size of the control point data.
 
+--- 
 
-### Methods
+## Methods
 
 ---
 
