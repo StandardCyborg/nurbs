@@ -15,7 +15,7 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
   var splineDimension = nurbs.splineDimension;
   var i, j, n, m, d, kvar;
 
-  if (derivative !== undefined) {
+  if (derivative !== undefined && derivative !== null) {
     if (!Array.isArray(derivative)) {
       derivative = [derivative];
     }
@@ -24,7 +24,7 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
       if (derivative[i] === undefined) derivative[i] = 0;
       totalDerivativeOrder += derivative[i];
     }
-    if (totalDerivativeOrder !== 1) {
+    if (totalDerivativeOrder > 1) {
       throw new Error('Analytical derivative not implemented for order n = ' + totalDerivativeOrder + '.');
     }
   }
