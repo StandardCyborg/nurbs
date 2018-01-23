@@ -326,7 +326,7 @@ Compute the [support][support] of a point on the spline. That is, the integer in
 
 ## Credits
 
-<img width="100px" src="img/sc.png" />
+<img width="100px" src="docs/sc.png" />
 
 Development supported by [Standard Cyborg][sc].
 
