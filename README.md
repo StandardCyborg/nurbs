@@ -14,6 +14,30 @@ This library implements n-dimensional [Non-Uniform Rational B-Splines][nurbs] (N
 $ npm install nurbs
 ```
 
+## Overview
+
+- [Examples][#examples]
+  - [Open B-Spline][#open-b-spline]
+  - [Clamped B-Spline][#clamped-b-spline]
+  - [Closed B-spline][#closed-b-spline]
+  - [Closed NURBS][#closed-nurbs]
+  - [Basis Functions](#basis-functions)
+  - [Derivatives](#derivatives)
+  - [Transforms](#transforms)
+  - [Curves, Surfaces, Volumes, etc.](#curves-surfaces-volumes-etc)
+- [API][#api]
+  - [`nurbs`](#nurbspoints-degree-weights-knots-boundary-options)
+  - [Properties](#properties)
+    - [`domain`](#domain)
+    - [`splineDimension`](#splinedimension)
+    - [`dimension`](#dimension)
+    - [`size`](#size)
+  - [Methods](#methods)
+    - [`evaluate`](#splineevaluateout-t0-t1--tn_1)
+    - [`evaluator`](#splineevaluatorderivativeorder-isbasis)
+    - [`support`](#splinesupportout-t0-t1--tn_1)
+
+
 ## Examples
 
 ### Open B-Spline
@@ -114,7 +138,7 @@ A spline does not pass through its control points. If you want to do more advanc
 
 ```javascript
 var curve = nurbs({size: [10, 15]);
-var basis = curve.basisEvaluator();
+var basis = curve.evaluator(null, true);
 basis([], 1.3, 2.4, 0, 0);
 ```
 
@@ -124,7 +148,27 @@ You may also query which points contribute to a given paramter value with `suppo
 curve.support([], 1.3, 2.4)
 ```
 
-### Transform
+### Derivatives
+
+To evaluate a derivative, you may create an evaluator using the same method as for basis functions above. Derivatives are specified by order and per-dimension, so that the third derivative in the second dimension would be specified as:
+
+```javascript
+var curve = nurbs({points: [[[...], ...], ...]});
+var derivative = curve.evaluator([0, 3]);
+derivative([], 1.3, 2.4);
+```
+
+**Note that currently only first derivatives are implemented.**
+
+For simple curves, a non-array-wrapped derivative order is permitted so that the first derivative of a curve is simply:
+
+```javascript
+var curve = nurbs({points: [...]});
+var derivative = curve.evaluator(1);
+derivative([], 1.3);
+```
+
+### Transforms
 
 Each `nurbs` object has a `transform` method that accepts a matrix using gl-matrix style matrices. See [gl-mat2](https://github.com/gl-modules/gl-mat2), [gl-mat3](https://github.com/gl-modules/gl-mat3), and [gl-mat4](https://github.com/gl-modules/gl-mat4). For example, to apply a transformation in-place to the previous example:
 
@@ -231,10 +275,23 @@ Construct a NURBS object. Options are:
 
 ### Properties
 
-- `domain` (Array): An array of arrays containing the minima and maxima for each spline dimension.
-- `splineDimension` (Number): Dimensionality of the spline surface, e.g. curve = 1, surface = 2, etc.
-- `dimension` (Number): Spatial dimension of the spline. One-dimensional = 1, 2D plane = 2, etc.
-- `size` (Array): Size of the control point data.
+### `spline.domain`
+
+An array of arrays containing the minima and maxima for each spline dimension.
+
+### `spline.splineDimension`
+
+Dimensionality of the spline surface, e.g. curve = 1, surface = 2, etc.
+
+
+### `spline.dimension`
+
+Spatial dimension of the spline. One-dimensional = 1, 2D plane = 2, etc.
+
+### `spline.size`
+
+Size of the control point data.
+
 
 ### Methods
 
