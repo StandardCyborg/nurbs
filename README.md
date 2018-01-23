@@ -28,10 +28,10 @@ $ npm install nurbs
 - [API](#api)
   - [`nurbs`](#nurbspoints-degree-weights-knots-boundary-options)
   - [Properties](#properties)
-    - [`domain`](#domain)
-    - [`splineDimension`](#splinedimension)
-    - [`dimension`](#dimension)
-    - [`size`](#size)
+    - [`domain`](#splinedomain)
+    - [`splineDimension`](#splinesplinedimension)
+    - [`dimension`](#splinedimension)
+    - [`size`](#splinesize)
   - [Methods](#methods)
     - [`evaluate`](#splineevaluateout-t0-t1--tn_1)
     - [`evaluator`](#splineevaluatorderivativeorder-isbasis)
@@ -307,14 +307,16 @@ Evaluate the spline at the parameters <em>t<sub>0</sub></em>, ..., <em>t<sub>n -
 
 Returns a function which evaluates the spline according to the specified arguments.
 Arguments are:
-- `derivativeOrder` (Number or Array of Numbers, default: `undefined`): If provided, evaluates the corresponding partial derivative. For example, to evaluate the third derivative in the second dimension of a spline, you would call `spline.evaluator([0, 3])`. See \[1\] for more details. **Currently only first derivatives are implemented.**
-- `isBasis` (boolean, default: `false`): If true, creates a basis function evaluator instead of a direct spline evaluator. Returns a function `function basis(out, t0, t1, ..., tn_1, i0, i1, ..., in_1)` which evaluates the value of the spline basis functions for a given parameter location and control hull indices. The inputs `t0, ..., tn_1` are the spline parameters <em>(t<sub>0</sub>, t<sub>1</sub>, ..., t<sub>n - 1</sub>)</em> and the integer indices `i0, ..., in_1` are the integer indices of a control point <em>(i<sub>0</sub>, i<sub>1</sub>, ..., i<sub>n - 1</sub>)</em>. The output is a real number between <em>0</em> and <em>1</em> by which the correpsonding control point is multiplied. Summing across all points in the `spline.support` gives the computed spline position. When possible, evaluating the spline directly is much faster.
+- `derivativeOrder` (Number or Array of Numbers, default: `undefined`): If provided, evaluates the corresponding partial derivative. For example, to evaluate the third derivative in the second dimension of a spline, you would call `spline.evaluator([0, 3])`. See \[1\] for more details.
+
+  **Currently only first derivatives are implemented.**
+- `isBasis` (boolean, default: `false`): If true, creates a basis function evaluator instead of a direct spline evaluator. Returns a function `function basis(out, t0, t1, ..., tn_1, i0, i1, ..., in_1)` which evaluates the value of the spline basis functions for a given parameter location and control hull indices. The inputs `t0, ..., tn_1` are the spline parameters <em>(t<sub>0</sub>, t<sub>1</sub>, ..., t<sub>n - 1</sub>)</em> and the indices `i0, ..., in_1` are the integer indices of a control point <em>(i<sub>0</sub>, i<sub>1</sub>, ..., i<sub>n - 1</sub>)</em>. The output is a real number between <em>0</em> and <em>1</em> by which the correpsonding control point is multiplied. Summing across all points in the `spline.support` gives the computed spline position. When possible, evaluating the spline directly is much faster.
 
 ---
 
 ### `spline.support(out, t0, t1, ..., tn_1)`
 
-Compute the [support][support] of a point on the spline. That is, the integer indices of all control points that influence the spline at the given position. To avoid allocation of many small arrays, the result is written in-place to array `out` as a packed array of index tuples, e.g. indices `[0, 5, 3]` and `[1, 5, 3]` are returned as `[0, 5, 3, 1, 5, 3]`.
+Compute the [support][support] of a point on the spline. That is, the integer indices of all control points that influence the spline at the given position. To avoid allocation of many small arrays, the result is written in-place to array `out` as a packed array of index tuples, e.g. indices `[0, 5, 3]` and `[1, 5, 3]` are returned as `[0, 5, 3, 1, 5, 3]`. Returns a reference to `out`.
 
 ---
 
