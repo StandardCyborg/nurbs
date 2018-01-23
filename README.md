@@ -37,7 +37,7 @@ $ npm install nurbs
     - [`evaluate`](#splineevaluateout-t0-t1--tn_1)
     - [`evaluator`](#splineevaluatorderivativeorder-isbasis)
     - [`support`](#splinesupportout-t0-t1--tn_1)
-    - [`support`](#splinetransformm)
+    - [`transform`](#splinetransformm)
 
 
 ## Examples
