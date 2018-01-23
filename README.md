@@ -16,16 +16,16 @@ $ npm install nurbs
 
 ## Overview
 
-- [Examples][#examples]
-  - [Open B-Spline][#open-b-spline]
-  - [Clamped B-Spline][#clamped-b-spline]
-  - [Closed B-spline][#closed-b-spline]
-  - [Closed NURBS][#closed-nurbs]
+- [Examples](#examples)
+  - [Open B-Spline](#open-b-spline)
+  - [Clamped B-Spline](#clamped-b-spline)
+  - [Closed B-spline](#closed-b-spline)
+  - [Closed NURBS](#closed-nurbs)
   - [Basis Functions](#basis-functions)
   - [Derivatives](#derivatives)
   - [Transforms](#transforms)
   - [Curves, Surfaces, Volumes, etc.](#curves-surfaces-volumes-etc)
-- [API][#api]
+- [API](#api)
   - [`nurbs`](#nurbspoints-degree-weights-knots-boundary-options)
   - [Properties](#properties)
     - [`domain`](#domain)
