@@ -297,11 +297,7 @@ Spatial dimension of the spline. One-dimensional = 1, 2D plane = 2, etc.
 
 Size of the control point data.
 
---- 
-
 ## Methods
-
----
 
 ### `spline.evaluate(out, t0, t1, ..., tn_1)`
 
