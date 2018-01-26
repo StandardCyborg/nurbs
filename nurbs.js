@@ -261,7 +261,7 @@ function domainGetter () {
   var ret = [];
 
   // If the reference to size is hard-coded, then the size cannot change, or
-  // if you change points manuall (like by appending a point) without re-running
+  // if you change points manually (like by appending a point) without re-running
   // the constructor, then it'll be incorrect. This aims for middle-ground
   // by querying the size directly, based on the point data type
   //
