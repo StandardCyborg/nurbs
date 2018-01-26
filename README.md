@@ -150,7 +150,7 @@ A b-spline does not pass through its control points. If you want to do more adva
 ```javascript
 var curve = nurbs({size: [10, 15]);
 var basis = curve.evaluator(null, true);
-basis([], 1.3, 2.4, 0, 0);
+basis(1.3, 2.4, 0, 0);
 ```
 
 You may also query which points contribute to a given paramter value with `support`:
