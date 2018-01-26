@@ -288,7 +288,7 @@ Construct a NURBS object. Options are:
 
 ### `spline.domain`
 
-An array of arrays containing the minima and maxima for each spline dimension.
+An array of arrays containing the minimum and maximum spline parameters for each respective spline dimension.
 
 --- 
 
