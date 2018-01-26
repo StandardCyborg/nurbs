@@ -232,7 +232,7 @@ curve.evaluate([], 0.5, 0.5);
 
 ### ndarrays
 
-Arrays of arrays are easy to work with for dynamically inserting and removing points, but may be problematic due to access and the allocation of many small arrays. `points` and `weights` also accept ndarrays (either array or typed array backed or generic get/set ndarrays). The object does not need to be an actual ndarray. Any object is acceptable as long as it has ndarray-style `data`, `shape`, `stride`, and `offset` properties.
+Arrays of arrays are easy to work with for dynamically inserting and removing points, but may be problematic due to access and the allocation of many small arrays. `points` and `weights` also accept ndarrays (either array or typed array backed or generic get/set ndarrays). The object does not need to be an actual ndarray. Any object is acceptable as long as it has ndarray-style `data`, `shape`, `stride`, and `offset` properties. This also means that if you have packed vertex data, you can trivially wrap it in an ndarray-style object.
 
 The [ndarray-pack][ndarray-pack] module is a simple way to see the correspondence between array of arrays and ndarrays:
 
