@@ -8,8 +8,6 @@ This library implements n-dimensional [Non-Uniform Rational B-Splines][nurbs] (N
 
 ## Installation
 
-**Not yet published.**
-
 ```bash
 $ npm install nurbs
 ```
