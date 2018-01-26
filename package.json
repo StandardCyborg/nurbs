@@ -1,6 +1,6 @@
 {
   "name": "nurbs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Evaluate n-Dimensional Non-Uniform Rational B-Splines (NURBS)",
   "main": "nurbs.js",
   "scripts": {
