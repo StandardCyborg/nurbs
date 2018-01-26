@@ -2,7 +2,7 @@ const normalize = require('gl-vec3/normalize');
 const cross = require('gl-vec3/cross');
 
 module.exports = function (mesh, nurbs, opts) {
-  var resolution, i, j, idx, u, v;
+  var resolution, i, j, u, v, ptr;
   opts = opts || {};
   mesh = mesh || {};
   var positions = mesh.positions = mesh.positions || [];
@@ -15,19 +15,12 @@ module.exports = function (mesh, nurbs, opts) {
     var res = opts.resolution === undefined ? 31 : opts.resolution;
     resolution = new Array(nurbs.splineDimension).fill(res);
   }
-  console.log('resolution:', resolution);
-
-  var position = mesh.positions;
-  var normals = mesh.normals;
-  var cells = mesh.cells;
 
   switch (nurbs.splineDimension) {
     case 1:
 
       break;
     case 2:
-      var ptr, i, j, u, v;
-
       var nu = resolution[0];
       var nv = resolution[1];
 
@@ -35,7 +28,7 @@ module.exports = function (mesh, nurbs, opts) {
       var nvBound = nv + (nurbs.boundary[1] === 'closed' ? 0 : 1);
 
       var nbVertices = nuBound * nvBound * 3;
-      var nbFaces = nu * nv * 4;
+      // var nbFaces = nu * nv * 4;
 
       var uDer = nurbs.evaluator([1, 0]);
       var vDer = nurbs.evaluator([0, 1]);
@@ -47,10 +40,8 @@ module.exports = function (mesh, nurbs, opts) {
       var tmp2 = [];
 
       for (i = 0; i < nuBound; i++) {
-        var tu = i / nu;
         u = uDomain[0] + (uDomain[1] - uDomain[0]) * i / nu;
         for (j = 0; j < nvBound; j++) {
-          var tv = j / nv;
           v = vDomain[0] + (vDomain[1] - vDomain[0]) * j / nv;
 
           ptr = 3 * (i + nuBound * j);

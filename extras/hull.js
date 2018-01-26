@@ -4,14 +4,13 @@ const unpack = require('ndarray-unpack');
 const isndarray = require('isndarray');
 
 module.exports = function (hull, nurbs) {
+  var i, j, idx1, idx2;
   hull = hull || {};
   var cells = hull.cells = hull.cells || [];
-  var positions = hull.positions = hull.position || [];
-
   var ndControlPoints = isndarray(nurbs.points) ? nurbs.points : pack(nurbs.points);
-  var ndControlWeights = isndarray(nurbs.weights) ? nurbs.weights : pack(nurbs.weights);
+  // var ndControlWeights = isndarray(nurbs.weights) ? nurbs.weights : pack(nurbs.weights);
 
-  var positions = hull.positions = unpack(
+  hull.positions = unpack(
     ndarray(
       ndControlPoints.data,
       [ndControlPoints.shape[0] * ndControlPoints.shape[1], ndControlPoints.shape[2]]

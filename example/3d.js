@@ -190,7 +190,7 @@ function run (regl) {
     positionBuffer = (positionBuffer || regl.buffer)(mesh.positions);
     cellBuffer = (cellBuffer || regl.elements)(mesh.cells);
 
-    var hullWireframe = wireframe(hull(hullMesh, nurbs));
+    var hullWireframe = wireframe(hull(hullMesh, surface));
 
     wireframePositionBuffer = (wireframePositionBuffer || regl.buffer)(hullWireframe.positions);
     wireframeNextBuffer = (wireframeNextBuffer || regl.buffer)(hullWireframe.nextPositions);
