@@ -7,6 +7,7 @@ var variable = require('./utils/variable');
 var accessorPreamble = require('./utils/accessor-preamble');
 var inferType = require('./utils/infer-type');
 var isArrayLike = require('./utils/is-array-like');
+var sizeGetter = require('./utils/size-getter');
 
 var evaluatorCache = {};
 var codeCache = {};
@@ -134,7 +135,7 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
   }
 
   for (d = 0; d < splineDimension; d++) {
-    line('var ' + sizeVar(d) + ' = this.size[' + d + '];');
+    line('var ' + sizeVar(d) + ' = ' + sizeGetter(points, 'this.points', d) + ';');
   }
   code.push(accessorPreamble(nurbs, 'x', 'this.points', points));
 

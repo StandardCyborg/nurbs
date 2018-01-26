@@ -4,6 +4,8 @@
 
 var transformerCache = {};
 var accessorPreamble = require('./utils/accessor-preamble');
+var sizeGetter = require('./utils/size-getter');
+var variable = require('./utils/variable');
 
 module.exports = function createTransform (cacheKey, nurbs, accessors, debug) {
   var i, j, iterator, iterators, terms, n, rvalue, lvalue;
@@ -19,11 +21,16 @@ module.exports = function createTransform (cacheKey, nurbs, accessors, debug) {
   code.push('var i, w;');
   code.push(accessorPreamble(nurbs, 'x', 'this.points', nurbs.points));
 
+  var sizeVar = variable(debug ? 'size' : 's');
+  for (i = 0; i < nurbs.splineDimension; i++) {
+    code.push('var ' + sizeVar(i) + ' = ' + sizeGetter(nurbs.points, 'this.points', i) + ';');
+  }
+
   iterators = [];
   for (i = 0; i < nurbs.splineDimension; i++) {
     iterator = 'i' + i;
     iterators.push(iterator);
-    code.push('for (' + iterator + ' = this.size[' + i + '] - 1; ' + iterator + ' >= 0; ' + iterator + '--) {');
+    code.push('for (' + iterator + ' = ' + sizeVar(i) + '- 1; ' + iterator + ' >= 0; ' + iterator + '--) {');
   }
 
   for (i = 0; i < nurbs.dimension; i++) {

@@ -3,6 +3,7 @@
 var inferType = require('./src/utils/infer-type');
 var computeCacheKey = require('./src/utils/cache-key');
 var isNdarray = require('./src/utils/is-ndarray');
+var isNdarrayLike = require('./src/utils/is-ndarray-like');
 var createAccessors = require('./src/utils/create-accessors');
 var numericalDerivative = require('./src/numerical-derivative');
 var isArrayLike = require('./src/utils/is-array-like');
@@ -69,8 +70,12 @@ function parseNURBS (points, degree, knots, weights, boundary, opts) {
             configurable: true
           },
           size: {
-            value: this.points.shape.slice(0, this.points.shape.length - 1),
-            writable: false,
+            get: function () {
+              return this.points.shape.slice(0, this.points.shape.length - 1);
+            },
+            set: function () {
+              throw new Error("Cannot assign to read only property 'size'");
+            },
             configurable: true
           }
         });
@@ -101,8 +106,17 @@ function parseNURBS (points, degree, knots, weights, boundary, opts) {
             configurable: true
           },
           size: {
-            value: size,
-            writable: false,
+            get: function () {
+              var size = [];
+              size.length = 0;
+              for (var i = 0, ptr = this.points; i < this.splineDimension; i++, ptr = ptr[0]) {
+                size[i] = ptr.length;
+              }
+              return size;
+            },
+            set: function () {
+              throw new Error("Cannot assign to read only property 'size'");
+            },
             configurable: true
           }
         });
@@ -235,14 +249,6 @@ function parseNURBS (points, degree, knots, weights, boundary, opts) {
     this.evaluator = function (derivativeOrder, isBasis) {
       return createEvaluator(this.__cacheKey, this, accessors, this.debug, this.checkBounds, isBasis, derivativeOrder);
     };
-
-    this.basisEvaluator = function () {
-      return createEvaluator(this.__cacheKey, this, accessors, this.debug, this.checkBounds, true);
-    };
-
-    this.derivativeEvaluator = function (orderPerDimension) {
-      return createEvaluator(this.__cacheKey, this, accessors, this.debug, this.checkBounds, false, orderPerDimension);
-    };
   }
 
   this.numericalDerivative = numericalDerivative.bind(this);
@@ -251,16 +257,40 @@ function parseNURBS (points, degree, knots, weights, boundary, opts) {
 }
 
 function domainGetter () {
+  var sizeArray;
   var ret = [];
+
+  // If the reference to size is hard-coded, then the size cannot change, or
+  // if you change points manually (like by appending a point) without re-running
+  // the constructor, then it'll be incorrect. This aims for middle-ground
+  // by querying the size directly, based on the point data type
+  //
+  // A pointer to the point array-of-arrays:
+  var ptr = this.points;
+
+  if (!ptr) {
+    // If there are no points, then just use this.size
+    sizeArray = this.size;
+  } else if (isNdarrayLike(ptr)) {
+    // If it's an ndarray, use the ndarray's shape property
+    sizeArray = ptr.shape;
+  }
+
   for (var d = 0; d < this.splineDimension; d++) {
+    var size = sizeArray ? sizeArray[d] : ptr.length;
     var p = this.degree[d];
     var isClosed = this.boundary[d] === 'closed';
+
     if (this.knots && this.knots[d]) {
       var k = this.knots[d];
-      ret[d] = [k[isClosed ? 0 : p], k[this.size[d]]];
+      ret[d] = [k[isClosed ? 0 : p], k[size]];
     } else {
-      ret[d] = [isClosed ? 0 : p, this.size[d]];
+      ret[d] = [isClosed ? 0 : p, size];
     }
+
+    // Otherwise if it's an array of arrays, we get the size of the next
+    // dimension by recursing into the points
+    if (ptr) ptr = ptr[0];
   }
   return ret;
 }
@@ -283,7 +313,9 @@ function nurbs (points, degree, knots, weights, boundary, opts) {
     get: domainGetter
   });
 
-  return parseFcn(points, degree, knots, weights, boundary, opts);
+  parseFcn(points, degree, knots, weights, boundary, opts);
+
+  return ctor;
 }
 
 module.exports = nurbs;

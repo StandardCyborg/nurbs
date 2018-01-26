@@ -35,6 +35,24 @@ test('ndarray style nurbs', function (t) {
     });
   });
 
+  t.test('update', function (t) {
+    t.test('evaluates size dynamically', function (t) {
+      var spline = nurbs(pack([[1], [2], [3]]));
+      t.deepEqual(spline.size, [3]);
+      spline.points = pack([[1], [2], [3], [4]]);
+      t.deepEqual(spline.size, [4]);
+      t.end();
+    });
+
+    t.test('evaluates the domain dynamically', function (t) {
+      var spline = nurbs(pack([[1], [2], [3]]));
+      t.deepEqual(spline.domain, [[2, 3]]);
+      spline.points = pack([[1], [2], [3], [4]]);
+      t.deepEqual(spline.domain, [[2, 4]]);
+      t.end();
+    });
+  });
+
   t.test('evaluation', function (t) {
     t.test('curves', function (t) {
       t.test('evaluates correctly for a uniform quadratic b-spline', function (t) {

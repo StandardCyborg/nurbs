@@ -12,7 +12,7 @@ test('array-of-array style nurbs', function (t) {
         degree: 2
       });
 
-      var der1 = spline.derivativeEvaluator(1);
+      var der1 = spline.evaluator([1]);
       var domain = spline.domain[0];
       var n = 11;
 
@@ -35,7 +35,7 @@ test('array-of-array style nurbs', function (t) {
         degree: 2
       });
 
-      var der1 = spline.derivativeEvaluator([1]);
+      var der1 = spline.evaluator([1]);
       var domain = spline.domain[0];
       var n = 11;
 
@@ -59,7 +59,7 @@ test('array-of-array style nurbs', function (t) {
         degree: 2
       });
 
-      var der1 = spline.derivativeEvaluator([1]);
+      var der1 = spline.evaluator([1]);
       var domain = spline.domain[0];
       var n = 11;
 
@@ -83,7 +83,7 @@ test('array-of-array style nurbs', function (t) {
         degree: 2
       });
 
-      var der1 = spline.derivativeEvaluator([1]);
+      var der1 = spline.evaluator([1]);
       var domain = spline.domain[0];
       var n = 11;
 
@@ -106,7 +106,7 @@ test('array-of-array style nurbs', function (t) {
         degree: 3
       });
 
-      var der1 = spline.derivativeEvaluator([1]);
+      var der1 = spline.evaluator([1]);
       var domain = spline.domain[0];
       var n = 11;
 
@@ -130,7 +130,7 @@ test('array-of-array style nurbs', function (t) {
         degree: 3
       });
 
-      var der1 = spline.derivativeEvaluator([1]);
+      var der1 = spline.evaluator([1]);
       var domain = spline.domain[0];
       var n = 11;
 
@@ -154,7 +154,7 @@ test('array-of-array style nurbs', function (t) {
         degree: 3
       });
 
-      var der1 = spline.derivativeEvaluator([1]);
+      var der1 = spline.evaluator([1]);
       var domain = spline.domain[0];
       var n = 11;
 
@@ -179,7 +179,7 @@ test('array-of-array style nurbs', function (t) {
         degree: 2
       });
 
-      var der1 = spline.derivativeEvaluator([1]);
+      var der1 = spline.evaluator([1]);
       var domain = spline.domain[0];
       var n = 11;
 
@@ -206,7 +206,7 @@ test('array-of-array style nurbs', function (t) {
         ],
         degree: 2
       });
-      var der1 = spline.derivativeEvaluator([1, 0]);
+      var der1 = spline.evaluator([1, 0]);
       var domain = spline.domain;
       var n = 5;
 
@@ -235,7 +235,7 @@ test('array-of-array style nurbs', function (t) {
         ],
         degree: 2
       });
-      var der1 = spline.derivativeEvaluator([0, 1]);
+      var der1 = spline.evaluator([0, 1]);
       var domain = spline.domain;
       var n = 5;
 
