@@ -357,6 +357,31 @@ test('array-of-array style nurbs', function (t) {
       }, /Expected an array of points/);
       t.end();
     });
+
+    t.test('does not require updating to change the number of points', function (t) {
+      var spline = nurbs({points: [[1], [2]], checkBounds: true});
+      t.deepEqual(spline.evaluate([], 1.5), [1.5]);
+      spline.points = [[1], [2], [3], [4], [5]];
+      t.deepEqual(spline.evaluate([], 4.5), [4.5]);
+
+      t.end();
+    });
+
+    t.test('evaluates size dynamically', function (t) {
+      var spline = nurbs([[1], [2], [3]]);
+      t.deepEqual(spline.size, [3]);
+      spline.points.push([5]);
+      t.deepEqual(spline.size, [4]);
+      t.end();
+    });
+
+    t.test('evaluates the domain dynamically', function (t) {
+      var spline = nurbs([[1], [2], [3]]);
+      t.deepEqual(spline.domain, [[2, 3]]);
+      spline.points.push([5]);
+      t.deepEqual(spline.domain, [[2, 4]]);
+      t.end();
+    });
   });
 
   t.test('evaluation', function (t) {
@@ -889,7 +914,7 @@ test('array-of-array style nurbs', function (t) {
         boundary: 'clamped'
       });
 
-      var basis = spline.basisEvaluator();
+      var basis = spline.evaluator(null, true);
       t.equal(basis(2, 0), 1);
       t.equal(basis(2, 1), 0);
       t.equal(basis(2, 2), 0);
@@ -916,7 +941,7 @@ test('array-of-array style nurbs', function (t) {
         boundary: 'clamped'
       });
 
-      var basis = spline.basisEvaluator();
+      var basis = spline.evaluator(null, true);
 
       t.equal(basis(3.5, 3.5, 0, 0), 0.015625);
       t.equal(basis(3.5, 3.5, 1, 0), 0.046875);
@@ -977,7 +1002,7 @@ test('array-of-array style nurbs', function (t) {
 
     t.test('allows basis function evaluation without points', function (t) {
       var curve = nurbs({size: 10});
-      var basis = curve.basisEvaluator();
+      var basis = curve.evaluator(null, true);
       t.equal(basis(3, 0), 0.0);
       t.equal(basis(3, 1), 0.5);
       t.equal(basis(3, 2), 0.5);
