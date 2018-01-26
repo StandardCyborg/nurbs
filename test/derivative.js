@@ -172,6 +172,33 @@ test('array-of-array style nurbs', function (t) {
     });
   });
 
+  t.test('derivative basis', function (t) {
+    var spline = nurbs({
+      points: [[0], [0], [0], [0], [0]],
+      weights: [1, 2, 3, 4, 5],
+      degree: 3
+    });
+
+    var der1Basis = spline.evaluator(1, true);
+    var domain = spline.domain[0];
+
+    var n = 11;
+    for (var i = 0; i < spline.size[0]; i++) {
+      for (var j = 0; j < spline.size[0]; j++) {
+        spline.points[j][0] = i === j ? 1 : 0;
+      }
+      for (var k = 1; k < n - 1; k++) {
+        var tValue = domain[0] + (domain[1] - domain[0]) * k / (n - 1);
+
+        var ana = der1Basis(tValue, i);
+        var num = spline.numericalDerivative([], 1, 0, tValue)[0];
+
+        t.ok(almostEqual(ana, num, 1e-7), 'basis function for point ' + i + ', deriv = ' + num + ' at t = ' + tValue);
+      }
+    }
+    t.end();
+  });
+
   t.test('2D curves', function (t) {
     t.test('evaluates the derivative of a quadratic b-spline', function (t) {
       var spline = nurbs({

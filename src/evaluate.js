@@ -324,21 +324,29 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
           });
         }
         ndloop(n, function (ii) {
+          var weightFactor, pt1, pt2;
           var ij = ii.slice();
           var ij1 = ii.slice();
           // Replace the dimension being interpolated with the interpolation indices
           ij[d] = j;
           ij1[d] = j - 1;
           // Create a version to which we can append the dimension when we loop over spatial dimension
-          var ijWithDimension = ij.slice();
-          var ij1WithDimension = ij1.slice();
           if (isDerivative) {
-            for (m = 0; m < spaceDimension; m++) {
-              ijWithDimension[splineDimension] = ij1WithDimension[splineDimension] = m;
-              var weightFactor = hasWeights ? 'h * ' + weightVar(ij1) + ' / ' + weightVar(ij) + ' * ' : '';
-              var pt1 = pointVar(ijWithDimension) + (hasWeights ? ' / h' : '');
-              var pt2 = pointVar(ij1WithDimension) + (hasWeights ? ' / ' + weightVar(ij1) : '');
-              line(pointVar(ijWithDimension) + ' = ' + degree[d] + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
+            if (isBasis) {
+              weightFactor = hasWeights ? 'h * ' + weightVar(ij1) + ' / ' + weightVar(ij) + ' * ' : '';
+              pt1 = pointVar(ij) + (hasWeights ? ' / h' : '');
+              pt2 = pointVar(ij1) + (hasWeights ? ' / ' + weightVar(ij1) : '');
+              line(pointVar(ij) + ' = ' + degree[d] + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
+            } else {
+              var ijWithDimension = ij.slice();
+              var ij1WithDimension = ij1.slice();
+              for (m = 0; m < spaceDimension; m++) {
+                ijWithDimension[splineDimension] = ij1WithDimension[splineDimension] = m;
+                weightFactor = hasWeights ? 'h * ' + weightVar(ij1) + ' / ' + weightVar(ij) + ' * ' : '';
+                pt1 = pointVar(ijWithDimension) + (hasWeights ? ' / h' : '');
+                pt2 = pointVar(ij1WithDimension) + (hasWeights ? ' / ' + weightVar(ij1) : '');
+                line(pointVar(ijWithDimension) + ' = ' + degree[d] + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
+              }
             }
           } else {
             if (isBasis) {
