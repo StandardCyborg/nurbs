@@ -318,7 +318,7 @@ Evaluate the spline at the parameters <em>t<sub>0</sub></em>, ..., <em>t<sub>n -
 
 ### `spline.evaluator(derivativeOrders, isBasis)`
 
-Returns a function which evaluates the spline according to the specified arguments. `spline.evaluate` is just the special case `spline.evaluator()`.
+Returns a function which evaluates the spline according to the specified arguments. `spline.evaluate` is just the special case `spline.evaluator(null, false)`.
 
 Arguments are:
 - `derivativeOrders` (Number or Array of Numbers, default: `undefined`): If provided, evaluates the corresponding partial derivative. For example, to evaluate the third derivative in the second dimension of a spline, you would call `spline.evaluator([0, 3])`. See \[1\] for more details.
