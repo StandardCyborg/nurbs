@@ -269,6 +269,59 @@ test('array-of-array style nurbs', function (t) {
         });
       });
     });
+
+    t.test('makes properties read-only', function (t) {
+      t.test('fails to write dimension', function (t) {
+        var spline = nurbs([[1], [4], [7]]);
+        t.equal(spline.dimension, 1);
+        t.throws(function () {
+          spline.dimension = 7;
+        }, /Cannot assign to read only property/);
+        t.end();
+      });
+
+      t.test('fails to write splineDimension', function (t) {
+        var spline = nurbs([[1], [4], [7]]);
+        t.equal(spline.splineDimension, 1);
+        t.throws(function () {
+          spline.splineDimension = 7;
+        }, /Cannot assign to read only property/);
+        t.end();
+      });
+
+      t.test('fails to write size', function (t) {
+        var spline = nurbs([[1], [4], [7]]);
+        t.deepEqual(spline.size, [3]);
+        t.throws(function () {
+          spline.size = [7];
+        }, /Cannot assign to read only property/);
+        t.end();
+      });
+
+      t.test('can write size only if no points provided', function (t) {
+        // Create a spline with size
+        var spline = nurbs({size: [4]});
+        t.deepEqual(spline.size, [4]);
+
+        // Can modify size
+        t.doesNotThrow(function () {
+          spline.size = [5];
+        });
+        t.deepEqual(spline.size, [5]);
+
+        // Reinitialize with points instead
+        spline({points: [[1], [2], [3]]});
+        t.deepEqual(spline.size, [3]);
+
+        // now cannot write opints:
+        t.throws(function () {
+          spline.size = [5];
+        }, /Cannot assign to read only property/);
+
+        t.deepEqual(spline.size, [3]);
+        t.end();
+      });
+    });
   });
 
   t.test('updating', function (t) {

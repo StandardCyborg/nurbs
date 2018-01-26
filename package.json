@@ -4,7 +4,7 @@
   "description": "Evaluate n-Dimensional Non-Uniform Rational B-Splines (NURBS)",
   "main": "nurbs.js",
   "scripts": {
-    "start": "budo -o -l -H localhost --force-default-index example/3d.js -- -t glslify -t es2040",
+    "start": "budo -o -l -H localhost --force-default-index example/adaptive-curve-sampling.js -- -t glslify -t es2040",
     "lint": "semistandard",
     "lint-fix": "semistandard --fix",
     "test": "npm run lint && node test/index.js",
