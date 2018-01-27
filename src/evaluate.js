@@ -16,6 +16,14 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
   var splineDimension = nurbs.splineDimension;
   var i, j, n, m, d, kvar;
 
+  var points = nurbs.points;
+  var degree = nurbs.degree;
+  var weights = nurbs.weights;
+  var hasWeights = weights !== undefined;
+  var knots = nurbs.knots;
+  var spaceDimension = nurbs.dimension;
+  var boundary = nurbs.boundary;
+
   if (derivative !== undefined && derivative !== null) {
     if (!Array.isArray(derivative)) {
       derivative = [derivative];
@@ -25,8 +33,8 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
       if (derivative[i] === undefined) derivative[i] = 0;
       totalDerivativeOrder += derivative[i];
     }
-    if (totalDerivativeOrder > 1) {
-      throw new Error('Analytical derivative not implemented for order n = ' + totalDerivativeOrder + '.');
+    if (hasWeights && totalDerivativeOrder > 1) {
+      throw new Error('Analytical derivative not implemented for rational b-splines with order n = ' + totalDerivativeOrder + '.');
     }
   }
 
@@ -44,13 +52,6 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
 
     return cachedEvaluator.bind(nurbs);
   }
-
-  var points = nurbs.points;
-  var degree = nurbs.degree;
-  var weights = nurbs.weights;
-  var knots = nurbs.knots;
-  var spaceDimension = nurbs.dimension;
-  var boundary = nurbs.boundary;
 
   var code = [];
   var functionName = 'evaluate' + cacheKey;
@@ -86,7 +87,6 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
   var sizeVar = variable(debug ? 'size' : 's');
   var knotIndex = variable(debug ? 'knotIndex' : 'j');
 
-  var hasWeights = weights !== undefined;
   var allDimensionUniform = true;
   for (d = 0; d < splineDimension; d++) {
     if (isArrayLike(knots) && isArrayLike(knots[d])) {
@@ -300,7 +300,7 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
     for (i = 0; i < degree[d]; i++) {
       debugLine('\n  // Degree ' + degree[d] + ' evaluation in dimension ' + d + ', step ' + (i + 1) + '\n');
       for (j = degree[d]; j > i; j--) {
-        var isDerivative = derivative && derivative[d] !== 0 && i === degree[d] - 1;
+        var isDerivative = derivative && (degree[d] - i - derivative[d] <= 0);
 
         if (isDerivative) {
           line('m = 1 / (' + knotVar([d, j - i + degree[d] - 1]) + ' - ' + knotVar([d, j - 1]) + ');');
@@ -332,11 +332,12 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
           ij1[d] = j - 1;
           // Create a version to which we can append the dimension when we loop over spatial dimension
           if (isDerivative) {
+            var derivCoeff = i + 1;
             if (isBasis) {
               weightFactor = hasWeights ? 'h * ' + weightVar(ij1) + ' / ' + weightVar(ij) + ' * ' : '';
               pt1 = pointVar(ij) + (hasWeights ? ' / h' : '');
               pt2 = pointVar(ij1) + (hasWeights ? ' / ' + weightVar(ij1) : '');
-              line(pointVar(ij) + ' = ' + degree[d] + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
+              line(pointVar(ij) + ' = ' + derivCoeff + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
             } else {
               var ijWithDimension = ij.slice();
               var ij1WithDimension = ij1.slice();
@@ -345,7 +346,7 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
                 weightFactor = hasWeights ? 'h * ' + weightVar(ij1) + ' / ' + weightVar(ij) + ' * ' : '';
                 pt1 = pointVar(ijWithDimension) + (hasWeights ? ' / h' : '');
                 pt2 = pointVar(ij1WithDimension) + (hasWeights ? ' / ' + weightVar(ij1) : '');
-                line(pointVar(ijWithDimension) + ' = ' + degree[d] + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
+                line(pointVar(ijWithDimension) + ' = ' + derivCoeff + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
               }
             }
           } else {
