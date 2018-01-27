@@ -167,7 +167,7 @@ var derivative = curve.evaluator([0, 3]);
 derivative([], 1.3, 2.4);
 ```
 
-**Note that currently only first derivatives are implemented.**
+**Note that currently only first derivatives are implemented for rational b-splines. Non-uniform b-splines support higher orders.**
 
 For simple curves, a non-array-wrapped derivative order is permitted so that the first derivative of a curve is simply:
 
@@ -321,7 +321,7 @@ Returns a function which evaluates the spline according to the specified argumen
 Arguments are:
 - `derivativeOrders` (Number or Array of Numbers, default: `undefined`): If provided, evaluates the corresponding partial derivative. For example, to evaluate the third derivative in the second dimension of a spline, you would call `spline.evaluator([0, 3])`. See \[1\] for more details.
 
-  **Currently only first derivatives are implemented.**
+  **Currently only first derivatives are implemented for rational b-splines. Non-uniform b-splines support higher orders.**
 - `isBasis` (boolean, default: `false`): If true, creates a basis function evaluator instead of a direct spline evaluator. Returns a function `function basis(t0, t1, ..., tn_1, i0, i1, ..., in_1)` (no `out` argument is necessary since the answer is always a scalar) which evaluates the value of the spline basis functions for a given parameter location and control hull indices. The inputs `t0, ..., tn_1` are the spline parameters <em>(t<sub>0</sub>, t<sub>1</sub>, ..., t<sub>n - 1</sub>)</em> and the indices `i0, ..., in_1` are the integer indices of a control point <em>(i<sub>0</sub>, i<sub>1</sub>, ..., i<sub>n - 1</sub>)</em>. The output is a real number between <em>0</em> and <em>1</em> by which the correpsonding control point is multiplied. Summing across all points in the `spline.support` gives the computed spline position. When possible, evaluating the spline directly is much faster.
 
 ---

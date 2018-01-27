@@ -282,4 +282,103 @@ test('array-of-array style nurbs', function (t) {
       t.end();
     });
   });
+
+  t.test('second derivatives', function (t) {
+    t.test('of a quadratic b-spline', function (t) {
+      var spline = nurbs({
+        points: [[0], [1], [4], [2], [4]],
+        degree: 2
+      });
+
+      var der2 = spline.evaluator([2]);
+      var domain = spline.domain[0];
+      var n = 21;
+
+      var h = 1e-4;
+
+      for (var i = 1; i < n - 1; i++) {
+        var u = domain[0] + (domain[1] - domain[0]) * i / (n - 1);
+
+        var expectedDer2 = (spline.evaluate([], u + h)[0] - 2.0 * spline.evaluate([], u)[0] + spline.evaluate([], u - h)[0]) / h / h;
+        var actualDer2 = der2([], u)[0];
+
+        t.ok(almostEqual(actualDer2, expectedDer2, 2e-3), 'second derivative at t = ' + u + ', expected: ' + expectedDer2 + ', actual: ' + actualDer2);
+      }
+
+      t.end();
+    });
+
+    t.test('of a cubic b-spline', function (t) {
+      var spline = nurbs({
+        points: [[0], [1], [4], [2], [4]],
+        degree: 3
+      });
+
+      var der2 = spline.evaluator([2]);
+      var domain = spline.domain[0];
+      var n = 21;
+
+      var h = 1e-4;
+
+      for (var i = 1; i < n - 1; i++) {
+        var u = domain[0] + (domain[1] - domain[0]) * i / (n - 1);
+
+        var expectedDer2 = (spline.evaluate([], u + h)[0] - 2.0 * spline.evaluate([], u)[0] + spline.evaluate([], u - h)[0]) / h / h;
+        var actualDer2 = der2([], u)[0];
+
+        t.ok(almostEqual(actualDer2, expectedDer2, 2e-3), 'second derivative at t = ' + u + ', expected: ' + expectedDer2 + ', actual: ' + actualDer2);
+      }
+
+      t.end();
+    });
+
+    t.test('of a cubic b-spline with non-uniform knots', function (t) {
+      var spline = nurbs({
+        points: [[0], [1], [4], [2], [4]],
+        knots: [new Array(9).fill(0).map((d, i) => Math.sqrt(17 + i))],
+        degree: 3
+      });
+
+      var der2 = spline.evaluator([2]);
+      var domain = spline.domain[0];
+      var n = 21;
+
+      var h = 1e-4;
+
+      for (var i = 1; i < n - 1; i++) {
+        var u = domain[0] + (domain[1] - domain[0]) * i / (n - 1);
+
+        var expectedDer2 = (spline.evaluate([], u + h)[0] - 2.0 * spline.evaluate([], u)[0] + spline.evaluate([], u - h)[0]) / h / h;
+        var actualDer2 = der2([], u)[0];
+
+        t.ok(almostEqual(actualDer2, expectedDer2, 2e-3), 'second derivative at t = ' + u + ', expected: ' + expectedDer2 + ', actual: ' + actualDer2);
+      }
+
+      t.end();
+    });
+
+    t.test('of a quartic b-spline', function (t) {
+      var spline = nurbs({
+        points: [[0], [1], [4], [2], [4]],
+        degree: 4
+      });
+
+      var der2 = spline.evaluator([2]);
+      var domain = spline.domain[0];
+      var n = 21;
+
+      var h = 1e-4;
+
+      for (var i = 1; i < n - 1; i++) {
+        var u = domain[0] + (domain[1] - domain[0]) * i / (n - 1);
+
+        var expectedDer2 = (spline.evaluate([], u + h)[0] - 2.0 * spline.evaluate([], u)[0] + spline.evaluate([], u - h)[0]) / h / h;
+        var actualDer2 = der2([], u)[0];
+
+        t.ok(almostEqual(actualDer2, expectedDer2, 2e-3), 'second derivative at t = ' + u + ', expected: ' + expectedDer2 + ', actual: ' + actualDer2);
+      }
+
+      t.end();
+    });
+  });
 });
