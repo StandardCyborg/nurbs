@@ -381,4 +381,55 @@ test('array-of-array style nurbs', function (t) {
       t.end();
     });
   });
+  
+  t.test('second derivative of NURBS curves', function (t) {
+    t.test('of a quartic b-spline', function (t) {
+      var deg = 4;
+      var points = [[0], [1], [4], [2], [4], [6], [8]];
+      var spline = nurbs({
+        points: points,
+        knots: [new Array(points.length + deg + 1).fill(0).map((d, i) => Math.sqrt(2 + i))],
+        //weights: new Array(points.length).fill(0).map((d, i) => Math.pow(i + 1, 2)),
+        degree: deg,
+      });
+
+      var der1 = spline.evaluator([1]);
+      var der2 = spline.evaluator([2]);
+      var der3 = spline.evaluator([3]);
+      var der4 = spline.evaluator([4]);
+      var domain = spline.domain[0];
+      var samples = 3;
+
+      var h = 1e-3;
+
+      for (var i = 0; i < samples; i++) {
+        var u = domain[0] + (domain[1] - domain[0]) * (i + 1) / (samples + 1);
+
+        var ym2 = spline.evaluate([], u - 2 * h)[0];
+        var ym = spline.evaluate([], u - h)[0];
+        var y0 = spline.evaluate([], u)[0];
+        var yp = spline.evaluate([], u + h)[0];
+        var yp2 = spline.evaluate([], u + 2 * h)[0];
+
+        var expectedDer1 = (yp - ym) / (2 * h);
+        var actualDer1 = der1([], u)[0];
+
+        var expectedDer2 = (yp - 2 * y0 + ym) / (h * h);
+        var actualDer2 = der2([], u)[0];
+
+        var expectedDer3 = ((yp2 - ym2) - 2 * (yp - ym)) / 2 / (h * h * h);
+        var actualDer3 = der3([], u)[0];
+
+        var expectedDer4 = (ym2 + yp2 - 4 * (yp + ym) + 6 * y0) / (h * h * h * h);
+        var actualDer4 = der4([], u)[0];
+
+        t.ok(almostEqual(actualDer1, expectedDer1, 2e-3), 'first derivative at t = ' + u + ', expected: ' + expectedDer1 + ', actual: ' + actualDer1);
+        t.ok(almostEqual(actualDer2, expectedDer2, 2e-3), 'second derivative at t = ' + u + ', expected: ' + expectedDer2 + ', actual: ' + actualDer2);
+        t.ok(almostEqual(actualDer3, expectedDer3, 2e-3), 'third derivative at t = ' + u + ', expected: ' + expectedDer3 + ', actual: ' + actualDer3);
+        t.ok(almostEqual(actualDer4, expectedDer4, 2e-3), 'fourth derivative at t = ' + u + ', expected: ' + expectedDer4 + ', actual: ' + actualDer4);
+      }
+
+      t.end();
+    });
+  });
 });
