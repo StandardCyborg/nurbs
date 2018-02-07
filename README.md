@@ -151,7 +151,7 @@ var basis = curve.evaluator(null, true);
 basis(1.3, 2.4, 0, 0);
 ```
 
-You may also query which points contribute to a given paramter value with `support`:
+You may also query which points contribute to a given parameter value with `support`:
 
 ```javascript
 curve.support([], 1.3, 2.4)
