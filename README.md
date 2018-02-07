@@ -122,7 +122,7 @@ Plotting shows the closed spline:
 
 ### Closed NURBS
 
-An unclosed NURBS spline requires `n + degree + 1` knots, where `n` is the number of points. A closed NURBS curve requires only `n + 1` knots. The periodicity is defined by equivalence of the first and last knot, i.e. `k_0 := k_n`. The knots then define `n` unique, periodic knot intervals. For example,
+Going from B-Splines to NURBS means the addition of weights and non-uniform knots. Weights are straightforward since they correspond directly to points. As for knots, an unclosed NURBS spline requires `n + degree + 1` knots, where `n` is the number of points. A closed NURBS curve requires only `n + 1` knots. The periodicity is defined by equivalence of the first and last knot, i.e. `k_0 := k_n`. The knots then define `n` unique, periodic knot intervals. For example,
 
 ```javascript
 var curve = nurbs({
