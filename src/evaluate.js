@@ -33,9 +33,9 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
       if (derivative[i] === undefined) derivative[i] = 0;
       totalDerivativeOrder += derivative[i];
     }
-    if (hasWeights && totalDerivativeOrder > 1) {
-      throw new Error('Analytical derivative not implemented for rational b-splines with order n = ' + totalDerivativeOrder + '.');
-    }
+    //if (hasWeights && totalDerivativeOrder > 1) {
+      //throw new Error('Analytical derivative not implemented for rational b-splines with order n = ' + totalDerivativeOrder + '.');
+    //}
   }
 
   if (isBasis) cacheKey = 'Basis' + cacheKey;
@@ -101,9 +101,9 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
   function debugLine (str) {
     if (debug) line(str);
   }
-  // function clog (str) {
-    // if (debug) code.push('console.log("' + str + ' =", ' + str + ');');
-  // }
+  //function clog (str) {
+    //if (debug) code.push('console.log("' + str + ' =", ' + str + ');');
+  //}
 
   if (isBasis) {
     var indexArgs = [];
@@ -300,6 +300,10 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
     for (i = 0; i < degree[d]; i++) {
       debugLine('\n  // Degree ' + degree[d] + ' evaluation in dimension ' + d + ', step ' + (i + 1) + '\n');
       for (j = degree[d]; j > i; j--) {
+        /*if (derivative) {
+          console.log('derivative, degree[d], i:', derivative, degree[d], i);
+          console.log('degree[d] - i - derivative[d]:', degree[d] - i - derivative[d]);
+        }*/
         var isDerivative = derivative && (degree[d] - i - derivative[d] <= 0);
 
         if (isDerivative) {
@@ -343,7 +347,11 @@ module.exports = function (cacheKey, nurbs, accessors, debug, checkBounds, isBas
               var ij1WithDimension = ij1.slice();
               for (m = 0; m < spaceDimension; m++) {
                 ijWithDimension[splineDimension] = ij1WithDimension[splineDimension] = m;
-                weightFactor = hasWeights ? 'h * ' + weightVar(ij1) + ' / ' + weightVar(ij) + ' * ' : '';
+                //if (i === degree[d] - 1) {
+                  //weightFactor = hasWeights ? 'h * ' + weightVar(ij1) + ' / (' + weightVar(ij) + ' * '+weightVar(ij)+') * ' : '';
+                //} else {
+                  weightFactor = hasWeights ? 'h * ' + weightVar(ij1) + ' / ' + weightVar(ij) +' * ' : '';
+                //}
                 pt1 = pointVar(ijWithDimension) + (hasWeights ? ' / h' : '');
                 pt2 = pointVar(ij1WithDimension) + (hasWeights ? ' / ' + weightVar(ij1) : '');
                 line(pointVar(ijWithDimension) + ' = ' + derivCoeff + ' * ' + weightFactor + '(' + pt1 + ' - ' + pt2 + ') * m;');
